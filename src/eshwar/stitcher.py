@@ -38,10 +38,10 @@ class PanaromaStitcher():
 
             # Obtain matching points between stitched_image (left image) and current_image (right image)
             src_pts, dst_pts, matching_output = self.obtain_src_dst_points(stitched_image, current_image)
-            logging.info('Obtained source and destination points for feature matching for image pair: {}'.format(i))
+            logging.info('Obtained source and destination points for feature matching')
             
             self.display_image(matching_output, width=20, height=10)
-            logging.info('Computing homography for image pair: {}'.format(i))
+            logging.info('Computing homography for image pair')
 
             # Estimate homography with RANSAC
             H = self.estimate_homography_with_ransac(src_pts, dst_pts)
@@ -53,10 +53,10 @@ class PanaromaStitcher():
             logging.info('Transformed and blended the images')
 
             logging.info(f'Stitched {i + 1} images')
-            self.display_image(stitched_image, width=20, height=10)
+            
             
         logging.info('Stitching completed.')
-        self.display_image(stitched_image, width=20, height=10)
+        #self.display_image(stitched_image, width=20, height=10)
 
         return stitched_image, homography_matrixlist 
 
