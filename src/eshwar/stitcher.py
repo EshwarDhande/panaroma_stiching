@@ -196,6 +196,15 @@ class PanaromaStitcher():
         y_min, y_max = y_coords.min(), y_coords.max()  # Get the minimum and maximum y coordinates
         cropped_image = image[y_min:y_max + 1, x_min:x_max + 1, :]  # Crop the image to remove black pixels
         return cropped_image  # Return the cropped image
+    
+    def perspectiveTransform(self,points, H):
+        # Convert points to homogeneous coordinates
+        points = np.hstack((points, np.ones((points.shape[0], 1))))
+        # Apply the homography matrix
+        transformed_points = np.matmul(H, points.T).T
+        # Convert back to non-homogeneous coordinates
+        transformed_points = transformed_points[:, :2] / transformed_points[:, 2:]
+        return transformed_points
 
     def transform_images(self,img1, img2, H, focus=2, blend=True, scale_factor=4, blend_region=5):
         height1, width1 = img1.shape[:2]  # Height and width of the first image
@@ -204,7 +213,7 @@ class PanaromaStitcher():
         corners2 = np.array([[0, 0], [0, height2], [width2, height2], [width2, 0]], dtype=np.float32)  # Corners of the second image
 
         # Transform the corners of the second image
-        transformed_corners2 = cv2.perspectiveTransform(corners2.reshape(1, -1, 2), H).reshape(-1, 2)
+        transformed_corners2 = self.perspectiveTransform(corners2, H)
 
         # Combine the corners of both images
         all_corners = np.concatenate((corners1, transformed_corners2), axis=0)
