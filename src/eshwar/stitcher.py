@@ -55,7 +55,7 @@ class PanaromaStitcher():
             
             
         logging.info('Stitching completed.')
-        self.display_image(stitched_image, width=20, height=10)
+        stitched_image = cv2.cvtColor(stitched_image, cv2.COLOR_RGB2BGR)
 
         return stitched_image, homography_matrixlist 
 
