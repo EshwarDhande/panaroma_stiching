@@ -1,6 +1,7 @@
 import cv2
 import os
 import glob
+import time
 import numpy as np
 import matplotlib.pyplot as plt
 import logging  # Import logging module
@@ -12,7 +13,11 @@ class PanaromaStitcher():
     def __init__(self):
         pass  
     
-    def make_panaroma_for_images_in(self, path):
+    def make_panaroma_for_images_in(self, path,max_time=600):
+
+        #Record the time
+        start_time = time.time()
+
         # Get all images in the specified directory
         imf = path
         all_image_paths = sorted(glob.glob(imf + os.sep + '*'))  # Use glob to find all image files
@@ -31,7 +36,12 @@ class PanaromaStitcher():
         # Process images in pairs and stitch them together
         
         for i in range(1, len(images)):
-                        
+
+            #check elapsed time
+            if time.time() - start_time > max_time:
+                return stitched_image, homography_matrixlist
+            
+                  
             # Current image to stitch
             current_image = self.BGR2RGB(images[i])
             logging.info(f'Stitching image {i +1} to the aligned image')
